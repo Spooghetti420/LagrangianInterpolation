@@ -44,9 +44,21 @@ class Sum:
         return s
 
 
+class DuplicatePointError(ValueError):
+    pass
+
 def generate_equation(*list_points: Tuple[float, float]) -> Sum:
+    list_points = set(list_points) # Eliminate identical duplicate points
+
+    # Check for duplicate x-coords with different y-coordinates, e.g. (1, 2) and (1, 3).
+    x_coords = set()
+    for point in list_points:
+        if point[0] in x_coords:
+            raise DuplicatePointError("Coordinates passed to Lagrangian interpolation include duplicate x-coordinates; fitting polynomial is thus impossible.")
+        x_coords.add(point[0])
+    del x_coords, point # Free unused variables now
+
     s = Sum()
-    list_points = set(list_points) # Eliminate duplicates
     for point in list_points:
         product = 1
         factors = Product()
